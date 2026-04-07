@@ -976,7 +976,7 @@ h1,h2,h3{font-family:'Space Mono',monospace}
 .red-overlay{position:fixed;inset:0;pointer-events:none;z-index:9999;animation:pr 1s ease-in-out infinite alternate}
 @keyframes pr{from{background:rgba(255,23,68,.10)}to{background:rgba(255,23,68,.28)}}
 .warn-banner{background:rgba(255,23,68,.12);border:1px solid rgba(255,23,68,.3);border-radius:8px;padding:.7rem 1rem;color:#ff6b8a;font-size:.88rem;margin-bottom:.8rem}
-#MainMenu,footer,header{visibility:hidden}[data-testid="stToolbar"]{display:none}
+#MainMenu,footer,header{visibility:hidden;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -1265,31 +1265,22 @@ with col_cam:
         )
 
     # WebRTC — multiple STUN servers + free TURN for Streamlit Cloud
-    webrtc_streamer(
-        key="posture",
-        video_processor_factory=PostureDetector,
-        rtc_configuration=RTCConfiguration({
-            "iceServers": [
-                {"urls": ["stun:stun.l.google.com:19302"]},
-                {"urls": ["stun:stun1.l.google.com:19302"]},
-                {"urls": ["stun:stun2.l.google.com:19302"]},
-                {"urls": ["stun:stun.relay.metered.ca:80"]},
-                {
-                    "urls": [
-                        "turn:global.relay.metered.ca:80",
-                        "turn:global.relay.metered.ca:80?transport=tcp",
-                        "turn:global.relay.metered.ca:443",
-                        "turn:global.relay.metered.ca:443?transport=tcp",
-                    ],
-                    "username":   "openrelayproject",
-                    "credential": "openrelayproject",
-                },
-            ]
-        }),
-        media_stream_constraints={"video": True, "audio": False},
-        async_processing=True,
-    )
-
+   webrtc_streamer(
+    key="posture",
+    video_transformer_factory=PostureDetector,
+    rtc_configuration={
+        "iceServers": [
+            {"urls": ["stun:stun.l.google.com:19302"]},
+            {
+                "urls": ["turn:openrelay.metered.ca:80"],
+                "username": "openrelayproject",
+                "credential": "openrelayproject",
+            },
+        ]
+    },
+    media_stream_constraints={"video": True, "audio": False},
+    async_processing=True,
+)
     # Red overlay
     if st.session_state.red_overlay_on and posture_now == "Bad Posture" and st.session_state.session_active:
         st.markdown("<div class='red-overlay'></div>", unsafe_allow_html=True)
