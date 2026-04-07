@@ -1265,22 +1265,22 @@ with col_cam:
         )
 
     # WebRTC — multiple STUN servers + free TURN for Streamlit Cloud
-   webrtc_streamer(
-    key="posture",
-    video_transformer_factory=PostureDetector,
-    rtc_configuration={
-        "iceServers": [
-            {"urls": ["stun:stun.l.google.com:19302"]},
-            {
-                "urls": ["turn:openrelay.metered.ca:80"],
-                "username": "openrelayproject",
-                "credential": "openrelayproject",
-            },
-        ]
-    },
-    media_stream_constraints={"video": True, "audio": False},
-    async_processing=True,
-)
+    webrtc_streamer(
+        key="posture",
+        video_transformer_factory=PostureDetector,
+        rtc_configuration={
+            "iceServers": [
+                {"urls": ["stun:stun.l.google.com:19302"]},
+                {
+                    "urls": ["turn:openrelay.metered.ca:80"],
+                    "username": "openrelayproject",
+                    "credential": "openrelayproject",
+                },
+            ]
+        },
+        media_stream_constraints={"video": True, "audio": False},
+        async_processing=True,
+    )
     # Red overlay
     if st.session_state.red_overlay_on and posture_now == "Bad Posture" and st.session_state.session_active:
         st.markdown("<div class='red-overlay'></div>", unsafe_allow_html=True)
